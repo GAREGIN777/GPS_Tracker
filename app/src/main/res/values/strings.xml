@@ -1,0 +1,35 @@
+<resources>
+    <string name="greeting">Hello</string>
+    <string name="app_name">GPS Tracker</string>
+    <string name="app_your_id">Your app id is: <b>%1$s</b></string>
+    <string name="stop_service">Click to stop service</string>
+    <string name="service_description"><b>Start / Stop</b> GPS Service to track</string>
+
+
+    <string name="bottom_menu_about">About us</string>
+    <string name="bottom_menu_track">Track</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="about_text"><b>GPS</b> is a system of 30+ navigation satellites circling Earth.
+        We know where they are because they constantly send out signals.
+        A <b>GPS</b> receiver in your phone listens for these signals.
+        Once the receiver calculates its distance from four or more <b>GPS</b> satellites, it can figure out where you are.
+        \n\n<u>GPS obtains information from satellites which is why the internet is not required for collecting and storing location data.
+            The internet is only needed in order to access the data remotely and GPS trackers have a SIM card within them to enable connection.</u>
+    </string>
+
+    <string name="track_input">Enter track app id</string>
+    <string name="track_you">Your app id is %1s</string>
+    <string name="track_input_empty">Your input is empty</string>
+
+
+    <string name="track_found_success">Success, Track %1s was found!</string>
+
+    <string name="not_found_error">Not found</string>
+    <string name="submit_action">Submit</string>
+    <string name="track_date">Timestamp: %1s</string>
+    <string name="track_default_speed">0 km/h</string>
+    <string name="track_speed">%1s km / h</string>
+
+
+</resources>

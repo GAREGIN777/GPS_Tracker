@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="greeting">Здравствуйте</string>
+    <string name="app_name">Gps трекер</string>
+    <string name="app_your_id">id вашего устройства</string>
+    <string name="stop_service">"Кликните чтобы остановить службу "</string>
+    <string name="service_description"><b>Запуск/остановка</b> GPS-сервиса</string>
+    <string name="bottom_menu_about">О нас</string>
+    <string name="bottom_menu_track">Отслеживание</string>
+    <string name="about_text">Принцип работы спутниковых систем навигации основан на измерении расстояния от антенны на объекте (координаты которого необходимо получить) до спутников, положение которых известно с большой точностью. Таблица положений всех спутников называется альманахом, которым должен располагать любой спутниковый приёмник до начала измерений. Обычно приёмник сохраняет альманах в памяти со времени последнего выключения и если он не устарел — мгновенно использует его. Каждый спутник передаёт в своём сигнале весь альманах. Таким образом, зная расстояния до нескольких спутников системы, с помощью обычных геометрических построений, на основе альманаха, можно вычислить положение объекта в пространстве.</string>
+    <string name="track_input">Введите id приложения</string>
+    <string name="track_you">Ваш идентификатор - %1s</string>
+    <string name="track_input_empty">Вы ничего не ввели</string>
+    <string name="track_found_success">Успех, найден трек %1s!</string>
+    <string name="not_found_error">Не обнаружено</string>
+    <string name="submit_action">Отправить</string>
+    <string name="track_date">Временная метка: %1s</string>
+    <string name="track_default_speed">0 км/ч</string>
+    <string name="track_speed">%1s км/ч</string>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="header">#333333</color>
+    <color name="btn_color">#2196F3</color>
+
+    <color name="warning">#ECD490</color>
+    <color name="error">#FF5722</color>
+    <color name="success">#2DE335</color>
+
+
+    <color name="grey_light">#FAFAFA</color>
+    <color name="grey_input">#F4F4F4</color>
+    <color name="grey_input_color">#a2a1a3</color>
+</resources>

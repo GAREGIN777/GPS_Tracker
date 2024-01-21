@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "1009263211579",
+    "firebase_url": "https://android-tracker-1fa2e-default-rtdb.firebaseio.com",
+    "project_id": "android-tracker-1fa2e",
+    "storage_bucket": "android-tracker-1fa2e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009263211579:android:90dbbda994a784f718181e",
+        "android_client_info": {
+          "package_name": "com.example.gps_tracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1eEGjxANlNv7Lf8qp1ZjpuPrEGN3WpDg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009263211579:android:e0654a3e27ed220018181e",
+        "android_client_info": {
+          "package_name": "com.example.tracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1eEGjxANlNv7Lf8qp1ZjpuPrEGN3WpDg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".TrackFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/customcard"
+        android:backgroundTint="@color/white"
+        android:elevation="8dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="30dp"
+            android:fontFamily="@font/roboto"
+            android:text="@string/bottom_menu_track"
+            android:textColor="@color/header"
+            android:textSize="34sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/your_track"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/roboto"
+            android:text="@string/track_you"
+            android:textColor="@color/grey_input_color"
+            android:textIsSelectable="true"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/trackInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/custom_edittext_background"
+            android:drawableStart="@drawable/baseline_route_24"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto"
+            android:hint="@string/track_input"
+            android:minHeight="50dp"
+            android:textStyle="bold" />
+
+
+        <Button
+            android:id="@+id/submitCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="@color/header"
+            android:fontFamily="@font/roboto"
+            android:text="@string/submit_action"
+            android:textSize="18sp"
+            android:textStyle="bold"
+
+            app:cornerRadius="10dp">
+
+        </Button>
+
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/pointsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+    </ListView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
