@@ -26,7 +26,7 @@
             android:id="@+id/track_timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans"
+            android:fontFamily="@font/inter"
             android:text="@string/track_date" />
 
 
@@ -55,11 +55,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:fontFamily="@font/open_sans"
+            android:fontFamily="@font/inter"
             android:text="@string/track_default_speed"
             android:textColor="@color/btn_color"
-            android:textStyle="bold"
-             />
+            android:textStyle="bold" />
 
     </LinearLayout>
 
