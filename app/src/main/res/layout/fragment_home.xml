@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
-            android:fontFamily="@font/open_sans"
+            android:fontFamily="@font/inter"
             android:text="@string/app_name"
             android:textColor="@color/header"
             android:textSize="34sp"
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="@font/open_sans"
+            android:fontFamily="@font/inter"
             android:text="@string/service_description" />
 
         <androidx.appcompat.widget.AppCompatImageButton

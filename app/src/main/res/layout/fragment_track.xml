@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="30dp"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/inter"
             android:text="@string/bottom_menu_track"
             android:textColor="@color/header"
             android:textSize="34sp"
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/inter"
             android:text="@string/track_you"
             android:textColor="@color/grey_input_color"
             android:textIsSelectable="true"
@@ -55,7 +55,7 @@
             android:background="@drawable/custom_edittext_background"
             android:drawableStart="@drawable/baseline_route_24"
             android:drawablePadding="10dp"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/inter"
             android:hint="@string/track_input"
             android:minHeight="50dp"
             android:textStyle="bold" />
@@ -68,7 +68,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:backgroundTint="@color/header"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/inter"
             android:text="@string/submit_action"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -80,16 +80,7 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/pointsList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-    </ListView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

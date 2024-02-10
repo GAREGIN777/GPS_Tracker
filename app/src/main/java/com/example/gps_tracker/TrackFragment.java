@@ -96,7 +96,6 @@ private String myRef;
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(),R.layout.custom_track_item);
 
-        binding.pointsList.setAdapter(adapter);
         binding.yourTrack.setText(getString(R.string.track_you, myRef));
         binding.submitCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,9 +115,9 @@ private String myRef;
 
                             if (snapshot.getValue() != null) {
                                 //Toast.makeText(getContext(), getString(R.string.track_found_success,refName), Toast.LENGTH_SHORT).show();
-                                String point = String.valueOf(snapshot.getValue());
+                               /* String point = String.valueOf(snapshot.getValue());
                                 pointsList.add("Hello");
-                                adapter.notifyDataSetChanged();
+                                adapter.notifyDataSetChanged();*/
                             } else {
                                 Toast.makeText(getContext(), getString(R.string.not_found_error), Toast.LENGTH_SHORT).show();
                             }
