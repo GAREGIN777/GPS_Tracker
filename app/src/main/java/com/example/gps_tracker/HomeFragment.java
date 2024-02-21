@@ -1,9 +1,12 @@
 package com.example.gps_tracker;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,15 +15,22 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.gps_tracker.databinding.FragmentHomeBinding;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -44,17 +54,18 @@ public class HomeFragment extends Fragment {
 
     FragmentHomeBinding binding;
 
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    FirebaseFirestore firestoreDb = FirebaseFirestore.getInstance();
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef;
 
     private Intent serviceIntent;
     private boolean serviceRunning = false;
-    private int[] drawables = new int[]{R.drawable.baseline_double_arrow_24,R.drawable.twotone_pause_24};
+    private final int[] drawables = new int[]{R.drawable.baseline_double_arrow_24,R.drawable.twotone_pause_24};
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+    /*public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -65,7 +76,8 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(requireContext(), "Location wasn't permitted", Toast.LENGTH_SHORT).show();  // Handle the case where the user denied the location permission
             }
         }
-    }
+    }*/
+
 
 
     private void startLocationService() {
@@ -111,6 +123,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
          binding = FragmentHomeBinding.inflate(inflater, container, false);
 
         myRef = database.getReference(Hashes.getHash(requireContext()));

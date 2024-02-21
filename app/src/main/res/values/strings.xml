@@ -5,6 +5,13 @@
     <string name="stop_service">Click to stop service</string>
     <string name="service_description"><b>Start / Stop</b> GPS Service to track</string>
 
+    <string name="register">Registration</string>
+    <string name="username">Username</string>
+    <string name="guest">Child</string>
+    <string name="host">Parent</string>
+
+
+
 
     <string name="bottom_menu_about">About us</string>
     <string name="bottom_menu_track">Track</string>

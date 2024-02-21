@@ -17,4 +17,8 @@
     <string name="track_date">Временная метка: %1s</string>
     <string name="track_default_speed">0 км/ч</string>
     <string name="track_speed">%1s км/ч</string>
+    <string name="register">Регистрация</string>
+    <string name="username">Имя</string>
+    <string name="host">Родитель</string>
+    <string name="guest">"Ребёнок "</string>
 </resources>

@@ -33,18 +33,18 @@ public class MainActivity extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     private ActivityMainBinding binding;
     private Intent serviceIntent;
-    private boolean serviceRunning = false;
-    private int[] drawables = new int[]{R.drawable.baseline_double_arrow_24,R.drawable.twotone_pause_24};
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private final boolean serviceRunning = false;
+    private final int[] drawables = new int[]{R.drawable.baseline_double_arrow_24,R.drawable.twotone_pause_24};
+    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef;
     CustomManager fragmentManager;
     MenuInflater menuInflater;
-    Menu menu;
+    //Menu menu;
     // do something when the button is clicked
     // Yes we will handle click here but which button clicked??? We don't know
 
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu){
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.bottom_menu, menu);
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         //menuAbout = menu.findItem(R.id.menu_about);
         this.menu = menu;
         return true;
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*
-        myRef = database.getReference(Hashes.getHash(getApplicationContext()));
+
+        /*myRef = database.getReference(Hashes.getHash(getApplicationContext()));
         serviceRunning = ServiceUtils.isServiceRunning(getApplicationContext(), LocationService.class);
         serviceIntent = serviceRunning ? new Intent(this, LocationService.class) : null;
         int currentimg = serviceRunning ? drawables[1] : drawables[0];
