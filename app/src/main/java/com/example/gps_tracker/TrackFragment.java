@@ -78,8 +78,7 @@ private String myRef;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        myRef = Hashes.getHash(requireContext());
-        super.onCreate(savedInstanceState);
+         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -97,56 +96,6 @@ private String myRef;
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(),R.layout.custom_track_item);
 
         binding.yourTrack.setText(getString(R.string.track_you, myRef));
-        binding.submitCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                v.setClickable(false);
-                v.setAlpha(0.5f);
-                String refName = String.valueOf(binding.trackInput.getText()).trim();
-                if (refName.length() == 0) {
-                    Toast.makeText(getContext(), getString(R.string.track_input_empty), Toast.LENGTH_SHORT).show();
-                } else {
-                    DatabaseReference ref = database.getReference(refName);
-                    ref.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-
-                            if (snapshot.getValue() != null) {
-                                //Toast.makeText(getContext(), getString(R.string.track_found_success,refName), Toast.LENGTH_SHORT).show();
-                               /* String point = String.valueOf(snapshot.getValue());
-                                pointsList.add("Hello");
-                                adapter.notifyDataSetChanged();*/
-                            } else {
-                                Toast.makeText(getContext(), getString(R.string.not_found_error), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    binding.trackInput.setText("");
-                }
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(UI.BTN_MID_DELAY);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                        v.setClickable(true);
-                        v.setAlpha(1);
-                    }
-                }).start();
-
-
-            }
-        });
 
         return binding.getRoot();
     }

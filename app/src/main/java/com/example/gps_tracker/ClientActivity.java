@@ -27,7 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Arrays;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class ClientActivity extends AppCompatActivity {
 
     private final String DEFAULT_NAME = "Anonymous".toUpperCase();
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
         //binding.yourAppId.setText(String.format(getString(R.string.app_your_id),Hashes.getHash(getApplicationContext())));
 
-        fragmentManager = new CustomManager(getSupportFragmentManager());
+        fragmentManager = new CustomManager(getSupportFragmentManager(),binding.clientFragmentContainer.getId());
         //btnAbout.setOnClickListener(fragmentManager.listenFragmentBtn(AboutFragment.class,"replace"));
         //btnHome.setOnClickListener(fragmentManager.listenFragmentBtn(HomeFragment.class,"replace"));
 

@@ -3,15 +3,21 @@ package com.example.gps_tracker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.gps_tracker.databinding.ActivityValidationBinding;
 import com.example.gps_tracker.dataclasses.UserData;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,42 +26,61 @@ public class ValidationActivity extends AppCompatActivity {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     ActivityValidationBinding binding;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        binding = ActivityValidationBinding.inflate(getLayoutInflater());
-        UserData user = new UserData();
-        //db.collection("users").document().
         super.onCreate(savedInstanceState);
+        binding = ActivityValidationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // получаем объект RadioGroup
-        // обработка переключения состояния переключателя
-        binding.radioGroup.setOnCheckedChangeListener((radiogroup, id)-> {
 
-            // получае выбранную кнопку
-            RadioButton radio = findViewById(id);
-            switch (radio.getText().toString()) {
-                case "Parent":
-                     user.setUserType(0);
-                    break;
-                case "Child":
-                    user.setUserType(1);
-                    break;
-                default:
-                    break;
+
+        db.collection("users").document(Hashes.getHash(getApplicationContext())).get().addOnSuccessListener(documentSnapshot -> {
+            UserData user = new UserData();
+            if(documentSnapshot.exists()){
+                startActivity(user.redirectIntent(getApplicationContext(),documentSnapshot.getString("role")));
             }
-        });
+            else {
+                binding.pending.setVisibility(View.GONE);
+                binding.main.setVisibility(View.VISIBLE);
+                //db.collection("users").document().
 
-        binding.submit.setOnClickListener(v -> {
+                // получаем объект RadioGroup
+                // обработка переключения состояния переключателя
+                binding.radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        int radioId = group.getCheckedRadioButtonId();
+                        int guest = R.id.radio_guest;
+                        int host = R.id.radio_host;
+                        if(radioId == guest){
+                            user.setUserType(1);
+                        }
+                        else if(radioId == host){
+                            user.setUserType(0);
+                        }
+                    }
+                });
 
-            user.setUserName(binding.username.getText().toString());
-            if(user.isValidated()){
-                db.collection("users").document(Hashes.getHash(getApplicationContext())).set(user.getMap()).addOnSuccessListener(unused -> {
-                    Toast.makeText(getApplicationContext(),"Success!",Toast.LENGTH_LONG).show();
-                }).addOnFailureListener(e -> {
-                    Toast.makeText(getApplicationContext(),e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+                binding.submit.setOnClickListener(v -> {
+
+                    user.setUserName(binding.username.getText().toString());
+                    Toast.makeText(getApplicationContext(),user.getMap().toString(),Toast.LENGTH_SHORT).show();
+                    if(user.isValidated()){
+                        db.collection("users").document(Hashes.getHash(getApplicationContext())).set(user.getMap()).addOnSuccessListener(unused -> {
+                            binding.submit.setEnabled(false);
+                            startActivity(user.redirectIntent(getApplicationContext(),user.getUserType()));
+                            Toast.makeText(getApplicationContext(),"Success!",Toast.LENGTH_LONG).show();
+                        }).addOnFailureListener(e -> {
+                            Toast.makeText(getApplicationContext(),e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+                        });
+                    }
                 });
             }
         });
+
+
     }
 }

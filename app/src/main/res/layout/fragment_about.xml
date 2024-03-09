@@ -9,25 +9,25 @@
     <!-- TODO: Update blank fragment layout -->
 
 
+    <androidx.cardview.widget.CardView
+        style="@style/Widget.Material3.CardView.Elevated"
+        android:layout_margin="15dp"
+        app:cardCornerRadius="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <LinearLayout
-        android:backgroundTint="@color/white"
-        android:background="@drawable/customcard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:elevation="8dp"
-        android:paddingTop="16dp"
-        android:layout_margin="16dp"
-        android:paddingBottom="40dp"
         >
 
         <TextView
+            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:fontFamily="@font/inter"
             android:text="@string/bottom_menu_about"
-            android:textColor="@color/header"
             android:textColorHint="#FFFFFF"
             android:textSize="34sp"
             android:textStyle="bold" />
@@ -38,16 +38,16 @@
             android:layout_margin="20dp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/inter"
-            android:letterSpacing="0.01"
-            android:lineSpacingExtra="3sp"
+            android:letterSpacing="0.02"
+            android:lineSpacingExtra="4sp"
             android:text="@string/about_text"
 
 
             />
 
 
-    </LinearLayout>
-
+     </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 
 </FrameLayout>

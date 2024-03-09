@@ -21,4 +21,7 @@
     <string name="username">Имя</string>
     <string name="host">Родитель</string>
     <string name="guest">"Ребёнок "</string>
+    <string name="host_tracks">Подключенные устройства</string>
+    <string name="add_device">Добавить устройство</string>
+    <string name="device_name">Устройство %1s</string>
 </resources>
