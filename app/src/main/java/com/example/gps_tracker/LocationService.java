@@ -1,15 +1,12 @@
 package com.example.gps_tracker;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
+
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.widget.Toast;
@@ -17,29 +14,27 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 
+import com.example.gps_tracker.dataclasses.DeviceInfo;
+import com.example.gps_tracker.dataclasses.GeoPointWithSpeed;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
-import java.util.Date;
 
 public class LocationService extends Service {
 
-    private static final int NOTIFICATION_ID = 123;
-    private static final String CHANNEL_ID = "LocationServiceChannel";
+
 
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
-    private FirebaseDatabase database;
-    private DatabaseReference myRef;
+    private final FirebaseFirestore database = FirebaseFirestore.getInstance();
     private Context appContext;
+    private String userId;
 
 
 
@@ -47,11 +42,11 @@ public class LocationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        database = FirebaseDatabase.getInstance();
         appContext = getApplicationContext();
-        myRef = database.getReference(Hashes.getHash(appContext));
+        userId = Hashes.getHash(getApplicationContext());
         // Initialize Firebase Firestore
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        updateOptions();
         createLocationCallback();
         requestLocationUpdates();
         //startForeground(NOTIFICATION_ID, buildNotification());
@@ -71,21 +66,27 @@ public class LocationService extends Service {
                 .build();
     }*/
 
+    public void updateOptions(){
+        DeviceInfo deviceInfo = new DeviceInfo(getApplicationContext());
+        deviceInfo.startWatching();
+    }
+
     private void createLocationCallback() {
         locationCallback = new LocationCallback() {
             @Override
-            public void onLocationResult(LocationResult locationResult) {
-                Long timestamp = (Long) new Date().getTime();
-                myRef.child("battery").setValue(String.valueOf(87));
-                myRef.child("aboutDevice").setValue(Build.BRAND + " " + Build.MODEL);
-                if (locationResult != null) {
-                    for (Location location : locationResult.getLocations()) {
-                               if(location.hasSpeed()) {
-                                   myRef.child("location").child(String.valueOf(timestamp)).setValue(location.getLatitude() + "," + location.getLongitude() + "," + location.getSpeed());
-                               }
-                        // showToast("New Location: " + location.getLatitude() + ", " + location.getLongitude());
-                        // Handle the new location here
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                //Long timestamp = (Long) new Date().getTime();
+                //DeviceInfo deviceInfo = new DeviceInfo(Build.BRAND + " " + Build.MODEL,87);
+                //myRef.child("battery").setValue(String.valueOf(87));
+                //myRef.child("aboutDevice").setValue(Build.BRAND + " " + Build.MODEL);
+                for (Location location : locationResult.getLocations()) {
+                    if (location.hasSpeed()) {
+                        GeoPointWithSpeed geoPointWithSpeed = new GeoPointWithSpeed(Math.round(location.getSpeed() * 100.0) / 100.0f,new GeoPoint(location.getLatitude(),location.getLongitude()));
+                        database.collection("users").document(userId).collection("track").add(geoPointWithSpeed.getMap());
+                        //myRef.child("location").child(String.valueOf(timestamp)).setValue(location.getLatitude() + "," + location.getLongitude() + "," + location.getSpeed());
                     }
+                    // showToast("New Location: " + location.getLatitude() + ", " + location.getLongitude());
+                    // Handle the new location here
                 }
             }
         };
@@ -103,7 +104,9 @@ public class LocationService extends Service {
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            // for ActivityCompat#requestPermissions  more details.
+            ActivityCompat.requestPermissions((Activity) appContext, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+
             return;
         }
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());

@@ -52,7 +52,7 @@ public class TrackCardAdapter extends RecyclerView.Adapter<TrackCardAdapter.MyVi
     public void onBindViewHolder(@NonNull TrackCardAdapter.MyViewHolder holder, int position) {
         TrackCard trackCard = cards.get(position);
         holder.binding.getRoot().setOnClickListener(v -> {
-            fragmentManager.replaceFragment(CurrentDeviceItem.class);
+            fragmentManager.replaceFragment(CurrentDeviceItem.newInstance(trackCard.getId()));
             //Toast.makeText(v.getContext(), trackCard.getDeviceName(),Toast.LENGTH_SHORT).show();
         });
         holder.binding.username.setText(trackCard.getUsername());

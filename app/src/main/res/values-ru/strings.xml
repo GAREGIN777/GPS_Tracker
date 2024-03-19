@@ -24,4 +24,10 @@
     <string name="host_tracks">Подключенные устройства</string>
     <string name="add_device">Добавить устройство</string>
     <string name="device_name">Устройство %1s</string>
+    <string name="user_name_warn">"Ваше имя должно содержать от 3 до 20 символов.       "</string>
+    <string name="user_role_warn">Роль пользователя не была выбрана.</string>
+    <string name="input_wrong">Неправильный ввод</string>
+    <string name="track_role_error">Может быть, вы нашли другого родителя</string>
+    <string name="track_smth_wrong">Что-то пошло не так</string>
+    <string name="parent_already_connected">Родитель уже подключен</string>
 </resources>

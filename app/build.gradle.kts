@@ -57,6 +57,8 @@ dependencies {
 
     testImplementation("junit:junit:4.13.2")
 
+    //Maps
+    implementation("com.yandex.android:maps.mobile:4.5.1-lite")
 
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

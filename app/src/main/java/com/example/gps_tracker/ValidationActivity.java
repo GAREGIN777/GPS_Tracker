@@ -1,5 +1,6 @@
 package com.example.gps_tracker;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +15,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.gps_tracker.databinding.ActivityValidationBinding;
+import com.example.gps_tracker.dataclasses.DeviceInfo;
 import com.example.gps_tracker.dataclasses.UserData;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,9 +40,9 @@ public class ValidationActivity extends AppCompatActivity {
 
 
         db.collection("users").document(Hashes.getHash(getApplicationContext())).get().addOnSuccessListener(documentSnapshot -> {
-            UserData user = new UserData();
+            UserData user = new UserData(getApplicationContext());
             if(documentSnapshot.exists()){
-                startActivity(user.redirectIntent(getApplicationContext(),documentSnapshot.getString("role")));
+                startActivity(user.redirectIntent(documentSnapshot.getString("role")));
             }
             else {
                 binding.pending.setVisibility(View.GONE);
@@ -67,15 +69,19 @@ public class ValidationActivity extends AppCompatActivity {
                 binding.submit.setOnClickListener(v -> {
 
                     user.setUserName(binding.username.getText().toString());
-                    Toast.makeText(getApplicationContext(),user.getMap().toString(),Toast.LENGTH_SHORT).show();
                     if(user.isValidated()){
                         db.collection("users").document(Hashes.getHash(getApplicationContext())).set(user.getMap()).addOnSuccessListener(unused -> {
                             binding.submit.setEnabled(false);
-                            startActivity(user.redirectIntent(getApplicationContext(),user.getUserType()));
+                            startActivity(user.redirectIntent(user.getUserType()));
                             Toast.makeText(getApplicationContext(),"Success!",Toast.LENGTH_LONG).show();
                         }).addOnFailureListener(e -> {
                             Toast.makeText(getApplicationContext(),e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
                         });
+                    }
+                    else{
+                       for(int i : user.showErrors()){
+                          Toast.makeText(getApplicationContext(),getString(i),Toast.LENGTH_LONG).show();
+                       }
                     }
                 });
             }

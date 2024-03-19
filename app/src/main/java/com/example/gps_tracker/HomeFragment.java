@@ -55,12 +55,10 @@ public class HomeFragment extends Fragment {
     FragmentHomeBinding binding;
 
     FirebaseFirestore firestoreDb = FirebaseFirestore.getInstance();
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef;
 
     private Intent serviceIntent;
+    //private final int[] drawables = new int[]{R.drawable.baseline_double_arrow_24,R.drawable.twotone_pause_24};
     private boolean serviceRunning = false;
-    private final int[] drawables = new int[]{R.drawable.baseline_double_arrow_24,R.drawable.twotone_pause_24};
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -85,11 +83,7 @@ public class HomeFragment extends Fragment {
         requireContext().startService(serviceIntent);
     }
 
-    private void stopLocationService() {
-        if(serviceIntent != null) {
-            requireContext().stopService(serviceIntent);
-        }
-    }
+
 
 
     /**
@@ -126,13 +120,10 @@ public class HomeFragment extends Fragment {
 
          binding = FragmentHomeBinding.inflate(inflater, container, false);
 
-        myRef = database.getReference(Hashes.getHash(requireContext()));
-        serviceRunning = ServiceUtils.isServiceRunning(requireContext(), LocationService.class);
-        serviceIntent = serviceRunning ? new Intent(requireContext(), LocationService.class) : null;
-        int currentImg = serviceRunning ? drawables[1] : drawables[0];
-        binding.stopStartServiceBtn.setImageResource(currentImg);
 
-        binding.stopStartServiceBtn.setOnClickListener(new View.OnClickListener() {
+
+
+        /*binding.stopStartServiceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (serviceRunning) {
@@ -150,7 +141,7 @@ public class HomeFragment extends Fragment {
                 int currentImg = serviceRunning ? drawables[1] : drawables[0];
                 binding.stopStartServiceBtn.setImageResource(currentImg);
             }
-        });
+        });*/
 
 
         return binding.getRoot();

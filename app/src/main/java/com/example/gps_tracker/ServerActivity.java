@@ -3,10 +3,13 @@ package com.example.gps_tracker;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.gps_tracker.adapters.TrackCardAdapter;
+import com.example.gps_tracker.constants.UI;
 import com.example.gps_tracker.databinding.ActivityServerBinding;
 import com.example.gps_tracker.dataclasses.HostUserModel;
 import com.example.gps_tracker.dataclasses.TrackCard;
@@ -34,39 +37,19 @@ public class ServerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //fragmentManager.replaceFragment();
-
-
         binding = ActivityServerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
 
-        DocumentReference ref = firestoreDb.collection("users").document(Hashes.getHash(getApplicationContext()));
-
-       ref.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult().exists()){
-                HostUserModel model = task.getResult().toObject(HostUserModel.class);
-                if(model != null) {
-                   // model.pushDevice("New device" + Math.random());
-                    //String username = task.getResult().getString("username");
-                   // task.getResult().getReference().update("connected",model.getConnected());
-                    //HashMap<Integer,String> map = task.getResult().get("connected");
-
-                    //ref.update("connected","New device");
-                    binding.username.setText(model.getUsername());
-
-                }
-            }
-        });
-
-        //passedData.putString("document",Hashes.getHash(getApplicationContext()));
-        //fragment.setArguments(passedData);
+    }
 
 
 
-        //binding.fragmentContainerView.
-        //data
 
 
+
+    public void replace(Fragment fragment){
+        CustomManager manager = new CustomManager(getSupportFragmentManager(),binding.serverFragmentContainer.getId());
+        manager.replaceFragment(fragment);
     }
 }

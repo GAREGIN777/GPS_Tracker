@@ -7,14 +7,14 @@ public class HostUserModel {
     private String devicename;
     private String username;
 
-    public void pushDevice(String device){
-     if (this.connected != null && this.connected.size() > 0) {
-      int ind = Integer.parseInt(connected.keySet().toArray(new String[0])[connected.keySet().size() - 1]);
-      this.connected.put(String.valueOf(ind + 1), device);
+    public static void pushDevice(HostUserModel ctx,String deviceId){
+     if (ctx.connected != null && ctx.connected.size() > 0) {
+      int ind = Integer.parseInt(ctx.connected.keySet().toArray(new String[0])[ctx.connected.keySet().size() - 1]);
+      ctx.connected.put(String.valueOf(ind + 1), deviceId);
      }
     else{
-        this.connected = new HashMap<String,String>();
-        this.connected.put("0",device);
+        ctx.connected = new HashMap<String,String>();
+        ctx.connected.put("0",deviceId);
      }
     }
 

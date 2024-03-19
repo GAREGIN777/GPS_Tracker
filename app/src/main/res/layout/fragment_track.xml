@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".TrackFragment">
+   >
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -58,6 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:autofillHints="track,device"
+                android:textColor="@color/black"
                 android:textColorHint="@color/grey_input_color"
                 android:background="@drawable/custom_edittext_background"
                 android:drawableStart="@drawable/baseline_route_24"
@@ -88,4 +88,4 @@
 
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

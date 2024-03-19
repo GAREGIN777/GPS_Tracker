@@ -57,7 +57,9 @@
             android:id="@+id/radio_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            >
 
             <RadioButton
                 android:id="@+id/radio_host"
@@ -76,6 +78,15 @@
                 android:fontFamily="@font/inter"
                 android:text="@string/guest" />
         </RadioGroup>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter"
+            android:text="@string/user_name_warn"
+            android:layout_marginBottom="5dp"
+            />
 
 
         <EditText

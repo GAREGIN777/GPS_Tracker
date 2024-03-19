@@ -17,21 +17,24 @@ public class TrackCard {
         return username;
     }
 
+
     public void setUsername(String username) {
-        this.username = username;
+        this.username = username.length() > 10 ? username.substring(0,10)+"..." : username;
+
     }
 
     public String getDeviceName() {
+
         return deviceName;
     }
 
     public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
+        this.deviceName = deviceName.length() > 10 ? deviceName.substring(0,10)+"..." : deviceName;
     }
 
     public TrackCard(String id, String username, String deviceName) {
         this.id = id;
-        this.username = username;
-        this.deviceName = deviceName;
+        this.setUsername(username);
+        this.setDeviceName(deviceName);
     }
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Battery body -->
+    <item android:id="@+id/battery_body">
+        <shape android:shape="rectangle">
+            <size android:width="30dp" android:height="15dp" />
+            <solid android:color="?attr/colorSecondary" />
+            <corners android:radius="2dp" />
+        </shape>
+    </item>
+
+    <!-- Battery level background -->
+    <item android:id="@+id/battery_level_bg" android:top="2dp" android:left="2dp" android:right="2dp" android:bottom="2dp">
+        <shape android:shape="rectangle">
+            <size android:width="26dp" android:height="12dp" />
+            <solid android:color="?attr/colorPrimary" />
+            <corners android:radius="1dp" />
+        </shape>
+    </item>
+
+
+
+
+    <!-- Battery level fill (adjust width based on battery percentage) -->
+
+</layer-list>
+
+
+
+
+
+

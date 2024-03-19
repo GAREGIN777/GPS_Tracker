@@ -14,13 +14,16 @@ import com.example.gps_tracker.adapters.TrackCardAdapter;
 import com.example.gps_tracker.constants.UI;
 import com.example.gps_tracker.databinding.FragmentDevicesBinding;
 import com.example.gps_tracker.databinding.FragmentHomeBinding;
+import com.example.gps_tracker.dataclasses.GuestUserModel;
 import com.example.gps_tracker.dataclasses.HostUserModel;
 import com.example.gps_tracker.dataclasses.TrackCard;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +84,90 @@ public class DevicesFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentDevicesBinding.inflate(inflater, container, false);
 
-        DocumentReference ref = firestoreDb.collection("users").document(Hashes.getHash(requireContext()));
+        DocumentReference myRef = firestoreDb.collection("users").document(Hashes.getHash(requireContext()));
+
+        myRef.get().addOnCompleteListener(userTask -> {
+            if (userTask.getResult().exists()){
+                binding.username.setText(userTask.getResult().getString("username"));
+            }
+        });
+
+        myRef.collection("children").addSnapshotListener((querySnapshot, error) -> {
+
+            if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                List<TrackCard> cards = new ArrayList<>();
+                List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+
+                binding.devicesLoader.setVisibility(View.VISIBLE);
+                binding.devicesRecycle.setVisibility(View.GONE);
+
+                for (QueryDocumentSnapshot document : querySnapshot) {
+                    String docId = document.getId();
+                    Task<DocumentSnapshot> docTask = firestoreDb.collection("users").document(docId).get();
+                    tasks.add(docTask);
+                    docTask.addOnCompleteListener(doc_task -> {
+                        if (doc_task.isSuccessful()) {
+                            GuestUserModel childModel = doc_task.getResult().toObject(GuestUserModel.class);
+                            if (childModel != null) {
+                                cards.add(new TrackCard(docId, childModel.getUsername(), childModel.getDevicename()));
+                            }
+                        } else {
+                            Toast.makeText(requireContext(), getString(R.string.not_found_error), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                Tasks.whenAllComplete(tasks).addOnCompleteListener(taskList -> {
+                    binding.devicesLoader.setVisibility(View.GONE);
+                    binding.devicesRecycle.setVisibility(View.VISIBLE);
+                    binding.devicesRecycle.setAdapter(new TrackCardAdapter(cards, new CustomManager(getParentFragmentManager(), UI.serverFragmentCont)));
+                });
+            } else  if(querySnapshot == null){
+                    Toast.makeText(requireContext(), getString(R.string.track_smth_wrong), Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(requireContext(), getString(R.string.not_found_error), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        /*myRef.collection("children").get().addOnCompleteListener(task -> {
+            List<TrackCard> cards = new ArrayList<TrackCard>();
+            List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+
+            binding.devicesLoader.setVisibility(View.VISIBLE);
+            binding.devicesRecycle.setVisibility(View.GONE);
+
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                   String docId = document.getId();
+                   Task<DocumentSnapshot> docTask = firestoreDb.collection("users").document(docId).get();
+                   tasks.add(docTask);
+                    docTask.addOnCompleteListener(doc_task -> {
+                        if(doc_task.isSuccessful()){
+                            GuestUserModel childModel = doc_task.getResult().toObject(GuestUserModel.class);
+                            //Toast.makeText(requireContext(),Toast.LENGTH_SHORT).show();
+                            if(childModel != null) {
+                                cards.add(new TrackCard(docId, childModel.getUsername(), childModel.getDevicename()));
+                            }
+                        }
+                        else {
+                            Toast.makeText(requireContext(), getString(R.string.not_found_error), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                   //Toast.makeText(requireContext(),childModel.getUsername(),Toast.LENGTH_SHORT).show();
+                  // cards.add(new TrackCard(docId,document.get("username").toString(),document.get("devicename").toString()));
+                }
+                Tasks.whenAllComplete(tasks).addOnCompleteListener(taskList -> {
+                    binding.devicesLoader.setVisibility(View.GONE);
+                    binding.devicesRecycle.setVisibility(View.VISIBLE);
+                    binding.devicesRecycle.setAdapter(new TrackCardAdapter(cards, new CustomManager(getParentFragmentManager(), UI.serverFragmentCont)));
+                });
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.track_smth_wrong), Toast.LENGTH_SHORT).show();
+            }
+        });*/
 
 
        /* binding.addDeviceBtn.setOnClickListener(v -> {
@@ -117,12 +203,10 @@ public class DevicesFragment extends Fragment {
         });*/
 
 
-        List<TrackCard> cards = new ArrayList<TrackCard>();
-        for(int i = 0;i < 100;i++) {
+        /*for(int i = 0;i < 100;i++) {
             cards.add(new TrackCard("Phone"+i, "Phone"+i, "Nexus 6p"));
-        }
+        }*/
 
-        binding.devicesRecycle.setAdapter(new TrackCardAdapter(cards, new CustomManager(getParentFragmentManager(),UI.serverFragmentCont)));
 
         return binding.getRoot();
 
