@@ -10,7 +10,32 @@ public class GeoPointWithSpeed {
     private Timestamp timestamp;
    private float speed;
    private GeoPoint geoPoint;
-   public GeoPointWithSpeed() {
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public GeoPoint getGeoPoint() {
+        return geoPoint;
+    }
+
+    public void setGeoPoint(GeoPoint geoPoint) {
+        this.geoPoint = geoPoint;
+    }
+
+    public GeoPointWithSpeed() {
 
    }
     public GeoPointWithSpeed(float speed,GeoPoint geoPoint){

@@ -79,8 +79,8 @@ public class ValidationActivity extends AppCompatActivity {
                         });
                     }
                     else{
-                       for(int i : user.showErrors()){
-                          Toast.makeText(getApplicationContext(),getString(i),Toast.LENGTH_LONG).show();
+                       for(int iErr : user.showErrors().values()){
+                          Toast.makeText(getApplicationContext(),getString(iErr),Toast.LENGTH_LONG).show();
                        }
                     }
                 });

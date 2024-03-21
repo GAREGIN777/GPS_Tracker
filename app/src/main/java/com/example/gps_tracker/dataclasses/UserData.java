@@ -63,13 +63,13 @@ public class UserData {
         return this.userName != null && this.userType != null;
     }
 
-    public int[] showErrors(){
-      int[] errors = new int[userTypes.length];
+    public Map<String,Integer> showErrors(){
+      Map<String,Integer> errors = new HashMap<>();
         if(this.userName == null) {
-           errors[0] = R.string.user_name_warn;
+           errors.put("userName",R.string.user_name_warn);
         }
         else if(this.userType == null){
-            errors[1] = R.string.user_role_warn;
+            errors.put("userType",R.string.user_role_warn);
         }
         return errors;
     }
