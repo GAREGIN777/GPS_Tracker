@@ -17,10 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.gps_tracker.constants.ServerActions;
 import com.example.gps_tracker.constants.UI;
 import com.example.gps_tracker.databinding.FragmentCurrentDeviceItemBinding;
 import com.example.gps_tracker.databinding.FragmentDevicesBinding;
 import com.example.gps_tracker.dataclasses.GuestUserModel;
+import com.example.gps_tracker.dataclasses.ServerAction;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
@@ -38,6 +40,8 @@ public class CurrentDeviceItem extends Fragment {
 
     // TODO: Rename and change types of parameters
     private String paramDeviceId;
+
+    private boolean turn = true;
 
 
     public CurrentDeviceItem() {
@@ -76,10 +80,24 @@ public class CurrentDeviceItem extends Fragment {
                     if (currentChildModel != null && currentChildModel.getDeviceInfo() != null) {
                         binding.deviceName.setText(getString(R.string.device_name, currentChildModel.getDevicename()));
                         binding.userName.setText(currentChildModel.getUsername());
-                            int battery = currentChildModel.getDeviceInfo().getBattery();
 
-                            binding.batteryImage.setImageResource(R.drawable.battery_ui);
-                            binding.battery.setText(getString(R.string.track_battery_charge, battery));
+                        int battery = currentChildModel.getDeviceInfo().getBattery();
+                        binding.batteryImage.setImageResource(R.drawable.battery_ui);
+                        binding.battery.setText(getString(R.string.track_battery_charge, battery));
+
+                        //AtomicBoolean turn = new AtomicBoolean(true);
+
+
+
+                        binding.flashlight.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                ServerAction serverAction = new ServerAction(ServerActions.FLASHLIGHT_ACTION, turn);
+                                database.collection("users").document(paramDeviceId).collection("server").document(ServerActions.FLASHLIGHT_ACTION).set(serverAction.toMap());
+                                turn = !turn;
+                            }
+                        });
+
                         binding.loader.setVisibility(View.GONE);
                         binding.mainContainer.setVisibility(View.VISIBLE);
                         }

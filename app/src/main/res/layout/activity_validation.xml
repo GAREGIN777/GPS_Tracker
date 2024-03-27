@@ -21,103 +21,106 @@
 
     </ProgressBar>
 
-    <LinearLayout
+
+    <androidx.cardview.widget.CardView
         android:id="@+id/main"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/customcard"
-        android:backgroundTint="@color/grey_light"
-        android:elevation="8dp"
-        android:orientation="vertical"
-        android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="10dp"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="8dp"
+        android:visibility="gone"
+        >
 
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="15dp"
-            android:fontFamily="@font/inter"
-            android:text="@string/register"
-            android:textColor="@color/header"
-            android:textSize="40sp"
-            android:textStyle="bold" />
-
-        <RadioGroup
-            android:id="@+id/radio_group"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="10dp"
-            >
+            android:orientation="vertical"
+            android:padding="16dp"
+           >
 
-            <RadioButton
-                android:id="@+id/radio_host"
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTintMode="multiply"
+                android:layout_gravity="center"
+                android:layout_marginBottom="15dp"
                 android:fontFamily="@font/inter"
-                android:text="@string/host" />
+                android:text="@string/register"
+                android:textSize="40sp"
+                android:textStyle="bold" />
 
-            <RadioButton
-                android:id="@+id/radio_guest"
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radio_host"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTintMode="multiply"
+                    android:fontFamily="@font/inter"
+                    android:text="@string/host" />
+
+                <RadioButton
+                    android:id="@+id/radio_guest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:buttonTintMode="multiply"
+                    android:fontFamily="@font/inter"
+                    android:text="@string/guest" />
+            </RadioGroup>
+
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:buttonTintMode="multiply"
+                android:layout_marginBottom="5dp"
                 android:fontFamily="@font/inter"
-                android:text="@string/guest" />
-        </RadioGroup>
+                android:text="@string/user_name_warn" />
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/inter"
-            android:text="@string/user_name_warn"
-            android:layout_marginBottom="5dp"
-            />
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="Name"
+                android:background="@drawable/custom_edittext_background"
+                android:hint="@string/username"
+                android:textColorHint="@color/header"
+                android:textColor="@color/header"
+                android:inputType="textPersonName"
+                android:minHeight="50dp">
+
+            </EditText>
+
+            <Button
+                style="materialb"
+                android:id="@+id/submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@color/header"
+                android:fontFamily="@font/inter"
+                android:textColor="@color/white"
+                android:text="@string/submit_action"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:cornerRadius="10dp">
+
+            </Button>
 
 
-        <EditText
-            android:id="@+id/username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:autofillHints="Name"
-            android:background="@drawable/custom_edittext_background"
-            android:hint="@string/username"
-            android:inputType="textPersonName"
-            android:minHeight="50dp">
-
-        </EditText>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:backgroundTint="@color/header"
-            android:fontFamily="@font/inter"
-            android:text="@string/submit_action"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:cornerRadius="10dp">
-
-        </com.google.android.material.button.MaterialButton>
-
-
-    </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

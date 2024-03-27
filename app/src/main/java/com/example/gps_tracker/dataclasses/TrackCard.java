@@ -19,7 +19,7 @@ public class TrackCard {
 
 
     public void setUsername(String username) {
-        this.username = username.length() > 10 ? username.substring(0,10)+"..." : username;
+        this.username = username.length() > 10 ? username.substring(0,7)+"..." : username;
 
     }
 

@@ -82,12 +82,17 @@ public class DevicesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        String yourId = Hashes.getHash(requireContext());
+
         binding = FragmentDevicesBinding.inflate(inflater, container, false);
 
-        DocumentReference myRef = firestoreDb.collection("users").document(Hashes.getHash(requireContext()));
+
+
+        DocumentReference myRef = firestoreDb.collection("users").document(yourId);
 
         myRef.get().addOnCompleteListener(userTask -> {
             if (userTask.getResult().exists()){
+                binding.serverTrackId.setText(getString(R.string.track_you,yourId));
                 binding.username.setText(userTask.getResult().getString("username"));
             }
         });

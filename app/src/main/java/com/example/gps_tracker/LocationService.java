@@ -2,11 +2,16 @@ package com.example.gps_tracker;
 
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.location.Location;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
 import android.widget.Toast;
@@ -14,20 +19,27 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 
+import com.example.gps_tracker.constants.ServerActions;
 import com.example.gps_tracker.dataclasses.DeviceInfo;
 import com.example.gps_tracker.dataclasses.GeoPointWithSpeed;
+import com.example.gps_tracker.dataclasses.ServerAction;
+import com.example.gps_tracker.managers.FlashlightManager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.Date;
+
 
 public class LocationService extends Service {
-
 
 
     private FusedLocationProviderClient fusedLocationClient;
@@ -35,8 +47,8 @@ public class LocationService extends Service {
     private final FirebaseFirestore database = FirebaseFirestore.getInstance();
     private Context appContext;
     private String userId;
-
-
+    private static final String CHANNEL_ID_TRACKER = "tracker_channel";
+    private static final int NOTIFICATION_ID_TRACKER = 1001;
 
 
     @Override
@@ -45,11 +57,38 @@ public class LocationService extends Service {
         appContext = getApplicationContext();
         userId = Hashes.getHash(getApplicationContext());
         // Initialize Firebase Firestore
+
+        //startForeground(NOTIFICATION_ID, buildNotification());
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+// Create the notification channel (for Android Oreo and higher)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String name = "Tracker Channel";
+            String description = "Notifications for tracker service";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID_TRACKER, name, importance);
+            channel.setDescription(description);
+
+            // Register the channel with the system
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         updateOptions();
+        listenToServerEvents();
         createLocationCallback();
         requestLocationUpdates();
-        //startForeground(NOTIFICATION_ID, buildNotification());
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(NOTIFICATION_ID_TRACKER, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION);
+        }
+        else{
+            startForeground(NOTIFICATION_ID_TRACKER, buildNotification());
+        }
+        return START_STICKY;
     }
 
     @Nullable
@@ -58,20 +97,41 @@ public class LocationService extends Service {
         return null;
     }
 
-    /*private Notification buildNotification() {
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
+    private Notification buildNotification() {
+        return new NotificationCompat.Builder(this, CHANNEL_ID_TRACKER)
                 .setContentTitle("Location Service")
-                .setContentText("Location service is running.")
+                .setContentText("Location service is running...")
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .build();
-    }*/
+    }
 
-    public void updateOptions(){
+    public void listenToServerEvents(){
+        database.collection("users").document(userId).collection("server").addSnapshotListener((queryDocumentSnapshots, error) -> {
+            if(error != null){
+                return;
+            }
+
+            if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
+                for (DocumentChange document : queryDocumentSnapshots.getDocumentChanges()) {
+                    ServerAction serverAction = document.getDocument().toObject(ServerAction.class);
+                    Toast.makeText(appContext,serverAction.toString(),Toast.LENGTH_SHORT).show();
+                    ServerActions.manageAction(serverAction.getAction_type(),serverAction.getAction(),appContext);
+                   //serverAction.getAction_type()
+
+                    //Toast.makeText(appContext,document.getDocument().toString(),Toast.LENGTH_SHORT).show();
+                     //document.getDocument().toObject();
+                }
+            }
+        });
+    }
+
+    public void updateOptions() {
         DeviceInfo deviceInfo = new DeviceInfo(getApplicationContext());
         deviceInfo.startWatching();
     }
 
     private void createLocationCallback() {
+        Toast.makeText(appContext, "Start", Toast.LENGTH_SHORT).show();
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
@@ -80,8 +140,8 @@ public class LocationService extends Service {
                 //myRef.child("battery").setValue(String.valueOf(87));
                 //myRef.child("aboutDevice").setValue(Build.BRAND + " " + Build.MODEL);
                 for (Location location : locationResult.getLocations()) {
-                    if (location.hasSpeed()) {
-                        GeoPointWithSpeed geoPointWithSpeed = new GeoPointWithSpeed(Math.round(location.getSpeed() * 100.0) / 100.0f,new GeoPoint(location.getLatitude(),location.getLongitude()));
+                    if (location.hasSpeed() && location.getSpeed() > 0) {
+                        GeoPointWithSpeed geoPointWithSpeed = new GeoPointWithSpeed(Math.round(location.getSpeed() * 100.0) / 100.0f, new GeoPoint(location.getLatitude(), location.getLongitude()));
                         database.collection("users").document(userId).collection("track").add(geoPointWithSpeed.getMap());
                         //myRef.child("location").child(String.valueOf(timestamp)).setValue(location.getLatitude() + "," + location.getLongitude() + "," + location.getSpeed());
                     }
@@ -96,7 +156,6 @@ public class LocationService extends Service {
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(5000); // Update interval in milliseconds
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -104,9 +163,7 @@ public class LocationService extends Service {
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions  more details.
-            ActivityCompat.requestPermissions((Activity) appContext, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
-
+            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());

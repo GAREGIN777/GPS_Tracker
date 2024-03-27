@@ -18,21 +18,41 @@ import com.example.gps_tracker.databinding.FragmentCurrentDeviceItemBinding;
 import com.example.gps_tracker.databinding.FragmentDevicesBinding;
 import com.example.gps_tracker.dataclasses.GeoPointWithSpeed;
 import com.example.gps_tracker.dataclasses.GuestUserModel;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.yandex.mapkit.Animation;
 import com.yandex.mapkit.MapKitFactory;
 import com.yandex.mapkit.geometry.Point;
 import com.yandex.mapkit.geometry.Polyline;
 import com.yandex.mapkit.geometry.PolylineBuilder;
+import com.yandex.mapkit.map.BaseMapObjectCollection;
+import com.yandex.mapkit.map.Callback;
 import com.yandex.mapkit.map.CameraPosition;
+import com.yandex.mapkit.map.ClusterizedPlacemarkCollection;
+import com.yandex.mapkit.map.IconStyle;
+import com.yandex.mapkit.map.MapObject;
+import com.yandex.mapkit.map.MapObjectCollectionListener;
+import com.yandex.mapkit.map.MapObjectDragListener;
+import com.yandex.mapkit.map.MapObjectTapListener;
+import com.yandex.mapkit.map.MapObjectVisitor;
 import com.yandex.mapkit.map.PlacemarkCreatedCallback;
 import com.yandex.mapkit.map.PlacemarkMapObject;
+import com.yandex.mapkit.map.PolylineMapObject;
+import com.yandex.mapkit.map.internal.ClusterizedPlacemarkCollectionBinding;
+import com.yandex.runtime.image.AnimatedImageProvider;
 import com.yandex.runtime.image.ImageProvider;
+import com.yandex.runtime.ui_view.ViewProvider;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -98,47 +118,52 @@ public class CurrentDeviceGps extends Fragment {
         binding = FragmentCurrentDeviceGpsBinding.inflate(inflater, container, false);
         // Inflate the layout for this fragment
         if(paramDeviceId != null){
-            binding.trackMap.getMapWindow().getMap().getMapObjects().clear();
-            PolylineBuilder route = new PolylineBuilder();
+           List<Point> route = new ArrayList<>();
 
-            database.collection("users").document(paramDeviceId).collection("track").get().addOnCompleteListener(task -> {
+            database.collection("users").document(paramDeviceId).collection("track").orderBy("timestamp").get().addOnCompleteListener(task -> {
                 if (task.getResult() != null){
-                   for(DocumentSnapshot snapshot : task.getResult().getDocuments()){
+                   for(QueryDocumentSnapshot snapshot : task.getResult()) {
                        GeoPointWithSpeed point = snapshot.toObject(GeoPointWithSpeed.class);
-                       if(point != null) {
-                           route.append(new Point(point.getGeoPoint().getLatitude(), point.getGeoPoint().getLongitude()));
-                       }
+                       Point geom = new Point(point.getGeoPoint().getLatitude(), point.getGeoPoint().getLongitude());
+                       route.add(geom);
+                   }
 
-                       database.collection("users").document(paramDeviceId).collection("track").addSnapshotListener((querySnapshot, error) -> {
-                           if (querySnapshot != null && !querySnapshot.isEmpty()) {
-                               for (DocumentChange document : querySnapshot.getDocumentChanges()) {
+                    Polyline startPolyline = new Polyline(route);
+                    List<Point> startPoints = startPolyline.getPoints();
+
+                    PlacemarkMapObject placemark =  binding.trackMap.getMapWindow().getMap().getMapObjects().addPlacemark(placemarkMapObject -> {
+                        placemarkMapObject.setGeometry(startPoints.get(startPoints.size()-1));
+                        placemarkMapObject.setIcon(ImageProvider.fromResource(requireContext(), R.drawable.custom_placemark));
+                    });
+
+                    PolylineMapObject startPolylineObject = binding.trackMap.getMapWindow().getMap().getMapObjects().addPolyline(startPolyline);
+                    binding.trackMap.getMapWindow().getMap().move(new CameraPosition(startPoints.get(startPoints.size()-1), 19, 90, 30.0f));
+
+                       database.collection("users").document(paramDeviceId).collection("track").whereGreaterThan("timestamp",new Timestamp(new Date())).addSnapshotListener((queryDocumentSnapshots, error) -> {
+                           if(error != null){
+                               return;
+                           }
+
+                           if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
+                               for (DocumentChange document : queryDocumentSnapshots.getDocumentChanges()) {
                                    GeoPointWithSpeed realPoint = document.getDocument().toObject(GeoPointWithSpeed.class);
-                                   route.append(new Point(realPoint.getGeoPoint().getLatitude(),realPoint.getGeoPoint().getLongitude()));
+                                   //Toast.makeText(requireContext(),realPoint.getMap().toString(),Toast.LENGTH_SHORT).show();
+                                   Point snapshotPoint = new Point(realPoint.getGeoPoint().getLatitude(),realPoint.getGeoPoint().getLongitude());
+                                   route.add(snapshotPoint);
                                }
+                               Polyline currentPolyline = new Polyline(route);
+                               List<Point> currentRoute = currentPolyline.getPoints();
 
-                               if (route.build() != null && route.build().getPoints().size() > 1) {
-                                   Point coordPointEnd = route.build().getPoints().get(0);
-                                   binding.trackMap.getMapWindow().getMap().getMapObjects().addPlacemark(new PlacemarkCreatedCallback() {
-                                       @Override
-                                       public void onPlacemarkCreated(@NonNull PlacemarkMapObject placemarkMapObject) {
-                                           placemarkMapObject.setGeometry(coordPointEnd);
-                                           placemarkMapObject.setIcon(ImageProvider.fromResource(requireContext(), R.drawable.custom_placemark));
-                                       }
-                                   });
-
-                                   //adding route
-
-
-                                   binding.trackMap.getMapWindow().getMap().getMapObjects().addPolyline(route.build());
-
-                                   //moving camera
-                                   binding.trackMap.getMapWindow().getMap().move(new CameraPosition(coordPointEnd, 21, 90, 30.0f));
+                              if (currentRoute.size() > 1) {
+                                   Point coordPointEnd = currentRoute.get(currentRoute.size()-1);
+                                   placemark.setGeometry(coordPointEnd);
+                                   startPolylineObject.setGeometry(currentPolyline);
+                                   binding.trackMap.getMapWindow().getMap().move(new CameraPosition(coordPointEnd, 19, 90, 30.0f));
                                }
 
                            }
                        });
 
-                   }
                 }
             });
 

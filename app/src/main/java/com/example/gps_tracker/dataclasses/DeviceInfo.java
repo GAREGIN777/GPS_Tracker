@@ -45,6 +45,8 @@ private final String userId;
         }
     }
 
+
+
     public void startWatching(){
         this.watchBatteryService();
     }
