@@ -48,7 +48,8 @@
     <string name="track_smth_wrong">Something went wrong</string>
     <string name="parent_already_connected">The parent is already connected</string>
 
-    <string name="track_battery_charge" translatable="false">%1$d</string>
+    <string name="track_battery_charge">%1$d</string>
+    <string name="search_child_devices">Search your child\'s applications</string>
     <!-- TODO: Remove or change this placeholder text -->
     <!-- TODO: Remove or change this placeholder text -->
     <!-- TODO: Remove or change this placeholder text -->

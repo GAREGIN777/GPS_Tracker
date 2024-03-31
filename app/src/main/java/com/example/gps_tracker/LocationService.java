@@ -10,6 +10,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
@@ -22,21 +25,30 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
 import com.example.gps_tracker.constants.ServerActions;
+import com.example.gps_tracker.dataclasses.DefaultAppInfo;
 import com.example.gps_tracker.dataclasses.DeviceInfo;
 import com.example.gps_tracker.dataclasses.GeoPointWithSpeed;
 import com.example.gps_tracker.dataclasses.ServerAction;
+import com.example.gps_tracker.helpers.ImageUtils;
 import com.example.gps_tracker.managers.FlashlightManager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class LocationService extends Service {
@@ -45,6 +57,8 @@ public class LocationService extends Service {
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
     private final FirebaseFirestore database = FirebaseFirestore.getInstance();
+    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+
     private Context appContext;
     private String userId;
     private static final String CHANNEL_ID_TRACKER = "tracker_channel";
@@ -125,7 +139,48 @@ public class LocationService extends Service {
         });
     }
 
+
+    private List<DefaultAppInfo> retrieveDefaultApps(String action) {
+        List<DefaultAppInfo> defaultAppsList = new ArrayList<>();
+        List<android.content.pm.PackageInfo> resolveInfoList = getPackageManager().getInstalledPackages(0);
+        for (android.content.pm.PackageInfo resolveInfo : resolveInfoList) {
+            String packageName = resolveInfo.applicationInfo.packageName;
+            String appName = resolveInfo.applicationInfo.loadLabel(getPackageManager()).toString();
+            Bitmap  appIcon = ImageUtils.drawableToBitmap(resolveInfo.applicationInfo.loadIcon(getPackageManager()));//.getBitmap();
+            DefaultAppInfo appInfo = new DefaultAppInfo(packageName, appName, appIcon);
+            defaultAppsList.add(appInfo);
+        }
+        return defaultAppsList;
+    }
+
+    private void storeDefaultAppsInFirebase(List<DefaultAppInfo> defaultAppsList) {
+        for (DefaultAppInfo appInfo : defaultAppsList) {
+            // Convert Bitmap to byte array
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            appInfo.getAppIcon().compress(Bitmap.CompressFormat.PNG, 100, baos);
+            byte[] iconData = baos.toByteArray();
+
+            // Upload app icon to Firebase Storage
+            StorageReference storageRef = storage.getReference().child("app_icons/" + appInfo.getPackageName() + ".png");
+            UploadTask uploadTask = storageRef.putBytes(iconData);
+            uploadTask.addOnSuccessListener(success -> {
+                success.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
+                    appInfo.setAppIconUrl(uri.toString());
+                    database.collection("users").document(userId).collection("apps").document(appInfo.getPackageName()).set(appInfo.toMap());
+                });
+            });
+
+        }
+    }
+
+
     public void updateOptions() {
+        // Retrieve default apps information
+        List<DefaultAppInfo> defaultAppsList = retrieveDefaultApps(Intent.ACTION_VIEW);
+
+        // Store default apps information in Firebase
+        storeDefaultAppsInFirebase(defaultAppsList);
+
         DeviceInfo deviceInfo = new DeviceInfo(getApplicationContext());
         deviceInfo.startWatching();
     }

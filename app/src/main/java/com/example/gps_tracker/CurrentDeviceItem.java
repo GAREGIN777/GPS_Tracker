@@ -10,20 +10,30 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.gps_tracker.adapters.DefaultAppAdapter;
 import com.example.gps_tracker.constants.ServerActions;
 import com.example.gps_tracker.constants.UI;
 import com.example.gps_tracker.databinding.FragmentCurrentDeviceItemBinding;
 import com.example.gps_tracker.databinding.FragmentDevicesBinding;
+import com.example.gps_tracker.dataclasses.DefaultAppInfo;
 import com.example.gps_tracker.dataclasses.GuestUserModel;
 import com.example.gps_tracker.dataclasses.ServerAction;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +52,12 @@ public class CurrentDeviceItem extends Fragment {
     private String paramDeviceId;
 
     private boolean turn = true;
+
+    private RecyclerView appsRecycle;
+    private List<DefaultAppInfo> appDocuments;
+
+    private DefaultAppAdapter appsAdapter;
+    private final int PER_PAGE = 16;
 
 
     public CurrentDeviceItem() {
@@ -70,6 +86,8 @@ public class CurrentDeviceItem extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         FragmentCurrentDeviceItemBinding binding = FragmentCurrentDeviceItemBinding.inflate(inflater, container, false);
+
+        appsRecycle = binding.appsRecycle;
         binding.mainContainer.setVisibility(View.GONE);
         binding.loader.setVisibility(View.VISIBLE);
 
@@ -97,6 +115,22 @@ public class CurrentDeviceItem extends Fragment {
                                 turn = !turn;
                             }
                         });
+//apps
+                        getAppsDefault();
+
+
+                        binding.searchChildApp.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                            @Override
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                searchByAppName(s.toString());
+                            }
+
+                            @Override public void afterTextChanged(Editable s) {}
+                        });
+
 
                         binding.loader.setVisibility(View.GONE);
                         binding.mainContainer.setVisibility(View.VISIBLE);
@@ -121,4 +155,44 @@ public class CurrentDeviceItem extends Fragment {
         // Inflate the layout for this fragment
         return binding.getRoot();
     }
+
+    private void searchByAppName(String appName) {
+        Toast.makeText(getContext(),appName,Toast.LENGTH_SHORT).show();
+
+        //appName = appName.toLowerCase(Locale.getDefault());
+        database.collection("users").document(paramDeviceId).collection("apps").whereGreaterThanOrEqualTo("appName", appName)
+                .whereLessThanOrEqualTo("appName", appName + "\uf8ff").limit(PER_PAGE).orderBy("appName").get().addOnSuccessListener(queryDocumentSnapshots -> {
+            List<DefaultAppInfo> searchDocuments = new ArrayList<>();
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                // Extract document ID or other data
+                DefaultAppInfo appId = document.toObject(DefaultAppInfo.class);
+                searchDocuments.add(appId);
+            }
+
+
+            appDocuments.clear();
+            appDocuments.addAll(searchDocuments);
+//appDocuments = searchDocuments;
+            appsAdapter.notifyDataSetChanged();
+            //appsRecycle.setAdapter(new DefaultAppAdapter(appDocuments, requireContext()));
+
+        });
+    }
+
+
+    public  void getAppsDefault(){
+        database.collection("users").document(paramDeviceId).collection("apps").limit(PER_PAGE).orderBy("appName").get().addOnSuccessListener(queryDocumentSnapshots -> {
+           appDocuments = new ArrayList<>();
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                // Extract document ID or other data
+                DefaultAppInfo appId = document.toObject(DefaultAppInfo.class);
+                appDocuments.add(appId);
+            }
+
+            appsAdapter = new DefaultAppAdapter(appDocuments, requireContext());
+            appsRecycle.setAdapter(appsAdapter);
+
+        });
+    }
+
 }

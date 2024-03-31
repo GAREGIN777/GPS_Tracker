@@ -30,4 +30,5 @@
     <string name="track_role_error">Может быть, вы нашли другого родителя</string>
     <string name="track_smth_wrong">Что-то пошло не так</string>
     <string name="parent_already_connected">Родитель уже подключен</string>
+    <string name="search_child_devices">Поиск приложений вашего ребенка</string>
 </resources>

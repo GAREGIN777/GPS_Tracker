@@ -39,14 +39,17 @@ android {
 
 dependencies {
 
+    // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.android.gms:play-services-location:21.2.0")
     implementation("com.google.firebase:firebase-database:20.3.1");
+    implementation("com.google.firebase:firebase-storage") // Update to the latest version
 
-    // Import the BoM for the Firebase platform
-    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
+
 
     // Declare the dependency for the Cloud Firestore library
     // When using the BoM, you don't specify versions in Firebase library dependencies
@@ -59,6 +62,10 @@ dependencies {
 
     //Maps
     implementation("com.yandex.android:maps.mobile:4.5.1-lite")
+
+
+    //image views
+    implementation("com.github.bumptech.glide:glide:4.12.0")
 
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
