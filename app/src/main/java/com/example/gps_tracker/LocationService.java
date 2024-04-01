@@ -129,7 +129,7 @@ public class LocationService extends Service {
                 for (DocumentChange document : queryDocumentSnapshots.getDocumentChanges()) {
                     ServerAction serverAction = document.getDocument().toObject(ServerAction.class);
                     Toast.makeText(appContext,serverAction.toString(),Toast.LENGTH_SHORT).show();
-                    ServerActions.manageAction(serverAction.getAction_type(),serverAction.getAction(),appContext);
+                    ServerActions.manageAction(new FlashlightManager(appContext),serverAction);
                    //serverAction.getAction_type()
 
                     //Toast.makeText(appContext,document.getDocument().toString(),Toast.LENGTH_SHORT).show();

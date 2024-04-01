@@ -10,7 +10,7 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.os.Build;
 
-public class FlashlightManager {
+public class FlashlightManager extends CustomCommandManager{
     private final Context context;
     private final CameraManager cameraManager;
     private String cameraId;
@@ -28,25 +28,6 @@ public class FlashlightManager {
         }
     }
 
-    public void turnOnFlashlight() {
-        if (isFlashlightAvailable()) {
-            try {
-                cameraManager.setTorchMode(cameraId, true);
-            } catch (CameraAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void turnOffFlashlight() {
-        if (isFlashlightAvailable()) {
-            try {
-                cameraManager.setTorchMode(cameraId, false);
-            } catch (CameraAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     /*public boolean isFlashlightOn() {
         try {
@@ -59,16 +40,18 @@ public class FlashlightManager {
         }
     }*/
 
-    public void toggle(Boolean value){
-        if(value){
-            turnOnFlashlight();
-        }
-        else{
-            turnOffFlashlight();
+    public void toggle(Object value){
+        boolean mode = (Boolean) value;
+        if (isAvailable()) {
+            try {
+                cameraManager.setTorchMode(cameraId, mode);
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private boolean isFlashlightAvailable() {
+    private boolean isAvailable() {
         return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
     }
 }
