@@ -189,7 +189,10 @@ public class CurrentDeviceItem extends Fragment {
                 appDocuments.add(appId);
             }
 
-            appsAdapter = new DefaultAppAdapter(appDocuments, requireContext());
+
+
+
+            appsAdapter = new DefaultAppAdapter(appDocuments, requireContext(),paramDeviceId);
             appsRecycle.setAdapter(appsAdapter);
 
         });

@@ -94,7 +94,6 @@ public class ClientActivity extends AppCompatActivity {
             // for ActivityCompat#requestPermissions  more details.
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.RECEIVE_BOOT_COMPLETED, Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
         }
-       LocationUtils.openLocationSettings(getApplicationContext());
 
         serviceIntent = new Intent(getApplicationContext(), LocationService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

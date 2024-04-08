@@ -19,11 +19,14 @@ import com.example.gps_tracker.CustomManager;
 import com.example.gps_tracker.DevicesFragment;
 import com.example.gps_tracker.HomeFragment;
 import com.example.gps_tracker.TrackFragment;
+import com.example.gps_tracker.constants.ServerActions;
 import com.example.gps_tracker.databinding.CustomAppItemBinding;
 import com.example.gps_tracker.databinding.CustomDeviceItemBinding;
 import com.example.gps_tracker.dataclasses.DefaultAppInfo;
+import com.example.gps_tracker.dataclasses.ServerAction;
 import com.example.gps_tracker.dataclasses.TrackCard;
 import com.example.gps_tracker.helpers.AppLauncher;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,9 @@ public class DefaultAppAdapter extends RecyclerView.Adapter<DefaultAppAdapter.My
 
     private final List<DefaultAppInfo> apps;
     private final Context appContext;
+    private final String paramDeviceId;
+    private final FirebaseFirestore database = FirebaseFirestore.getInstance();
+
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         CustomAppItemBinding binding;
@@ -40,9 +46,10 @@ public class DefaultAppAdapter extends RecyclerView.Adapter<DefaultAppAdapter.My
             this.binding = binding;
         }
     }
-    public DefaultAppAdapter(List<DefaultAppInfo> apps,Context appContext){
+    public DefaultAppAdapter(List<DefaultAppInfo> apps,Context appContext,String paramDeviceId){
         this.apps = apps;
         this.appContext = appContext;
+        this.paramDeviceId = paramDeviceId;
     }
 
     @NonNull
@@ -57,9 +64,6 @@ public class DefaultAppAdapter extends RecyclerView.Adapter<DefaultAppAdapter.My
     public void onBindViewHolder(@NonNull DefaultAppAdapter.MyViewHolder holder, int position) {
         DefaultAppInfo appCard = apps.get(position);
         holder.binding.appName.setText(appCard.getShortAppName());
-        holder.binding.getRoot().setOnClickListener(clickTask -> {
-            AppLauncher.launchApp(appContext,appCard.getPackageName());
-        });
         Glide.with(appContext).load(appCard.getAppIconUrl()).override(96,96).into(holder.binding.appImg);
         //holder.binding.devicename.setText(trackCard.getDeviceName());
     }

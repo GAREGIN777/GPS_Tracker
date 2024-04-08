@@ -6,12 +6,13 @@ import android.content.pm.PackageManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 
+import com.example.gps_tracker.constants.ServerActions;
+
 public class ActivityCrudManager extends CustomCommandManager{
         private final Context context;
         private final PackageManager packageManager;
 
-        private final String OPEN = "Open activity";
-        private final String DELETE = "Delete activity";
+
 
     //private String cameraId;
 
@@ -44,16 +45,13 @@ public class ActivityCrudManager extends CustomCommandManager{
 
 
     public void open(String packageName){
-        PackageManager packageManager = context.getPackageManager();
         Intent intent = packageManager.getLaunchIntentForPackage(packageName);
         if (intent != null) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         }
     }
 
     public void delete(String packageName){
-        PackageManager packageManager = context.getPackageManager();
         Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
         intent.setData(android.net.Uri.parse("package:" + packageName));
         intent.putExtra(Intent.EXTRA_RETURN_RESULT, true);
@@ -64,13 +62,13 @@ public class ActivityCrudManager extends CustomCommandManager{
     @Override
     public void toggle(Object v) {
         String action = (String) v;
-        if(action.split(" ").length == 2) {
-            String packageName = action.split(" ")[0];
-            String action_type = action.split(" ")[1];
+        if(action.split("&").length == 2) {
+            String packageName = action.split("&")[0];
+            String action_type = action.split("&")[1];
             switch (action_type){
-                case OPEN:
+                case ServerActions.ACTIVITY_OPEN:
                     open(packageName);
-                case DELETE:
+                case ServerActions.ACTIVITY_DELETE:
                     delete(packageName);
             }
         }

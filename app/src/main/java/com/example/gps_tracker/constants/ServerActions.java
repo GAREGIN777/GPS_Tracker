@@ -11,8 +11,21 @@ public class ServerActions {
 
     public static final String FLASHLIGHT_ACTION = "flashlight";
     public static final String CRUD_ACTIVITY_ACTIONS = "crudActivity";
+     public static final String ACTIVITY_OPEN = "Open activity";
+     public static final String ACTIVITY_DELETE = "Delete activity";
 
-    public static void manageAction(CustomCommandManager manager, ServerAction serverAction){
-        manager.toggle(serverAction.getAction());
+    public static void manageAction(Context ctx, ServerAction serverAction){
+        CustomCommandManager manager = null;
+        switch (serverAction.getAction_type()){
+            case FLASHLIGHT_ACTION:
+                manager = new FlashlightManager(ctx);
+                break;
+            case CRUD_ACTIVITY_ACTIONS:
+                manager = new ActivityCrudManager(ctx);
+                break;
+        }
+        if(manager != null) {
+            manager.toggle(serverAction.getAction());
+        }
     }
 }

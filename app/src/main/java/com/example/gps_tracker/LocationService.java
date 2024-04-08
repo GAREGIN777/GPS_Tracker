@@ -1,7 +1,6 @@
 package com.example.gps_tracker;
 
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -11,8 +10,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
@@ -30,14 +27,11 @@ import com.example.gps_tracker.dataclasses.DeviceInfo;
 import com.example.gps_tracker.dataclasses.GeoPointWithSpeed;
 import com.example.gps_tracker.dataclasses.ServerAction;
 import com.example.gps_tracker.helpers.ImageUtils;
-import com.example.gps_tracker.managers.FlashlightManager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.Priority;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -47,7 +41,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -90,7 +83,7 @@ public class LocationService extends Service {
             notificationManager.createNotificationChannel(channel);
         }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        updateOptions();
+        //updateOptions();
         listenToServerEvents();
         createLocationCallback();
         requestLocationUpdates();
@@ -129,7 +122,7 @@ public class LocationService extends Service {
                 for (DocumentChange document : queryDocumentSnapshots.getDocumentChanges()) {
                     ServerAction serverAction = document.getDocument().toObject(ServerAction.class);
                     Toast.makeText(appContext,serverAction.toString(),Toast.LENGTH_SHORT).show();
-                    ServerActions.manageAction(new FlashlightManager(appContext),serverAction);
+                    ServerActions.manageAction(appContext,serverAction);
                    //serverAction.getAction_type()
 
                     //Toast.makeText(appContext,document.getDocument().toString(),Toast.LENGTH_SHORT).show();
@@ -176,10 +169,16 @@ public class LocationService extends Service {
 
     public void updateOptions() {
         // Retrieve default apps information
-        List<DefaultAppInfo> defaultAppsList = retrieveDefaultApps(Intent.ACTION_VIEW);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List <DefaultAppInfo> defaultAppsList = retrieveDefaultApps(Intent.ACTION_VIEW);
 
-        // Store default apps information in Firebase
-        storeDefaultAppsInFirebase(defaultAppsList);
+                // Store default apps information in Firebase
+                storeDefaultAppsInFirebase(defaultAppsList);
+            }
+        }).start();
+
 
         DeviceInfo deviceInfo = new DeviceInfo(getApplicationContext());
         deviceInfo.startWatching();

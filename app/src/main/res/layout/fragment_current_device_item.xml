@@ -54,7 +54,13 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    >
 
         <ImageButton
             android:id="@+id/flashlight"
@@ -65,8 +71,20 @@
             android:layout_marginVertical="10dp"
             android:src="@drawable/baseline_flashlight_off_24"
             android:contentDescription="@string/device_name"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            />
+
+    <ImageButton
+        android:id="@+id/camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_edittext_background"
+        android:layout_marginStart="10dp"
+        android:padding="12dp"
+        android:layout_marginVertical="10dp"
+        android:src="@drawable/baseline_camera_off_24"
+        android:contentDescription="@string/device_name"
+         />
+</LinearLayout>
 
 
         <EditText

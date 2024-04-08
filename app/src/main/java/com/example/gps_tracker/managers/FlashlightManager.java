@@ -1,5 +1,6 @@
 package com.example.gps_tracker.managers;
 
+
 import android.content.Context;
 import android.hardware.camera2.CameraCharacteristics;
 import android.media.AudioManager;
